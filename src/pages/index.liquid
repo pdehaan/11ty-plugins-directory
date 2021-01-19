@@ -1,0 +1,37 @@
+---
+title: Home
+permalink: /
+---
+
+<h1>Eleventy Plugins <small>({{ eleventy_plugins | size }})</small></h1>
+
+{% for keyword in eleventy_plugins %}
+  <section>
+    <h2 id="{{ keyword.name }}">{{ keyword.name }} ({{ keyword.plugins | size }})</h2>
+    {% for plugin in keyword.plugins %}
+      <article>
+        <h3 data-score="{{ plugin.score.final }}" data-name="{{ plugin.package.name }}"><a href="{{ plugin.package.links.npm }}">{{ plugin.package.name }}</a> <small>v{{ plugin.package.version }}</small></h3>
+        {% if plugin.package.description %}
+          <p>{{ plugin.package.description | escape }}</p>
+        {% endif %}
+        <footer>
+          <dl>
+            <dt>Author:</dt>
+            <dd>{{ plugin.package.author.name | default: plugin.package.publisher.username }}</dd>
+
+            <dt>Last modified:</dt>
+            <dd>{{ plugin.package.date | dateLocale }}</dd>
+
+            {% assign keywords = plugin.package.keywords | sort | filter: "NO_KEYWORDS" | join: ", " %}
+            {% assign keywordLen = keywords | size %}
+            {% if keywordLen != 0 %}
+              <dt>Keywords:</dt>
+              <dd>{{ keywords }}</dd>
+            {% endif %}
+          </dl>
+        </footer>
+      </article>
+    {% endfor %}
+    <hr />
+  </section>
+{% endfor %}
